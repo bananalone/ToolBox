@@ -1,0 +1,6 @@
+{
+  "hello": {
+    "loaded": true,
+    "description": "This is a plugin example, input your name, output hello your name"
+  }
+}
