@@ -11,6 +11,7 @@ class App:
         self.listToolsPage = None
         self.listLoadedToolsPage = None
         self.currentPage = None
+        self._setPlugins = {}
         self._init_pages()
         
     def run(self):
@@ -38,6 +39,9 @@ class App:
         createTemplatePage = Page("CreateTool", "Create your own python tool", func=self._createTemplate_event).setParentItem(self.homepage)
         self.homepage.setChildrenItems(self.listToolsPage, self.listLoadedToolsPage, runPage, installPage, createTemplatePage)
         self.currentPage = self.homepage
+        loadedPlugins = core.listLoadedPlugins()
+        for name in loadedPlugins:
+            self._setPlugins[name] = False
         self._refresh()
     
     def _uninstall_event(self, name):
@@ -50,6 +54,7 @@ class App:
     def _load_event(self, name):
         def inner():
             core.load(name)
+            self._setPlugins[name] = False
             self._refresh()
             print("Load {} successfully".format(name))
         return inner
@@ -64,6 +69,8 @@ class App:
     def _setup_event(self, name):
         def inner():
             core.setup(name)
+            self._setPlugins[name] = True
+            self._refresh()
             print("\nSetup {} successfully".format(name))
         return inner
 
@@ -87,7 +94,7 @@ class App:
     def _gen_tool_pages(self, parent, plugins: dict) -> list:
         pages = []
         for name in plugins:
-            itemName = "{name}{loaded}".format(name=name, loaded = "(Loaded)" if plugins[name][core.LOADED] else "")
+            itemName = "{name}{loaded}".format(name=name, loaded="(Loaded)" if plugins[name][core.LOADED] else "")
             pluginPage = Page(itemName, plugins[name][core.DESC]).setParentItem(parent)
             loadPage = Page("Load", "Load python tool", func=self._load_event(name)).setParentItem(pluginPage)
             unloadPage = Page("Unload", "Unload python tool", func=self._unload_event(name)).setParentItem(pluginPage)
@@ -99,7 +106,8 @@ class App:
     def _gen_loaded_tool_pages(self, parent, plugins: dict) -> list:
         pages = []
         for name in plugins:
-            pluginPage = Page(name, plugins[name][core.DESC]).setParentItem(parent)
+            itemName = "{name}{iSet}".format(name=name, iSet="(Set)" if self._setPlugins[name] else "")
+            pluginPage = Page(itemName, plugins[name][core.DESC]).setParentItem(parent)
             setupPage = Page("Setup", "Setup python tool", func=self._setup_event(name)).setParentItem(pluginPage)
             pluginPage.setChildrenItems(setupPage)
             pages.append(pluginPage)
