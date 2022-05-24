@@ -58,8 +58,8 @@ class Page:
     def _showItems(self):
         for i in range(1, len(self._items)):
             item = self._items[i % len(self._items)]
-            print("  {index}. {name:<25s}{description}".format(index=i, name=item.getName(), description=item.getDescription()))
-        print("\n  0. Go back\n")
+            print("    {index}. {name:<25s}{description}".format(index=i, name=item.getName(), description=item.getDescription()))
+        print("\n    0. Go back\n")
 
     def next(self):
         if self._func: # 叶子节点
@@ -71,6 +71,7 @@ class Page:
             return self._items[0]
         else: # 分支节点
             try:
+                print("Chose a number below:\n")
                 self._showItems()
                 user_input = input(self.getLocation() + ' >>> ')
                 idx = int(user_input)
