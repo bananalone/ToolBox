@@ -64,15 +64,15 @@ class App:
     def _setup_event(self, name):
         def inner():
             core.setup(name)
-            print("Setup {} successfully".format(name))
+            print("\nSetup {} successfully".format(name))
         return inner
 
     def _run_event(self):
         loadedPlugins = core.listLoadedPlugins()
         for name in loadedPlugins:
-            print(">>> Start run #{{{}}} ...\n".format(name))
+            print(">>> Start run {} <<<\n".format(name))
             core.run(name)
-            print("\n>>> #{{{}}} finished ...".format(name))
+            print("\n>>> {} finished <<<1".format(name))
             
     def _install_event(self):
         path = input("Enter path of the plugin >>> ")
