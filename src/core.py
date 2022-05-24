@@ -53,10 +53,9 @@ class Core:
         else:
             plugins[name].setup()
 
-    def run(self):
+    def run(self, name: str) -> dict:
         plugins = self._manager.listLoadedPlugins()
-        for name in plugins:
-            plugins[name].run()
+        plugins[name].run()
 
 
 _table = JsonTable(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'plugins.json') )
